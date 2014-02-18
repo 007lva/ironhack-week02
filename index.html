@@ -27,18 +27,39 @@
 	<!--script src="withoutjquery.js"></script-->
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 	<script>
+
+		var lStorage = window.localStorage;
+
 		var input = $('#task');
 		var list = $('#list');
 		var btnAdd = $('#add');
 		var btnClean = $('#clean');
 		var btnImport = $('#getData');
 
+
+		function getAll() {
+			return JSON.parse(lStorage.getItem('tasks')) || [];
+		}
+
+		function setList(array) {
+			lStorage.setItem('tasks', JSON.stringify(array));
+		}
+
 		function agregar() {
+			//localStorage
+			var elem = {};
+			var array = getAll();
+			
+			elem["task"] = input.val();
+			array.push(elem);
+			setList(array);
+			//DOM
 			var item = document.createElement('li');
-			item.textContent = input.val();
+			item.textContent = elem["task"];
 			list.append(item);
 			input.val('');
 			console.log("agrego");
+			
 		}
 
 		function limpiar() {
