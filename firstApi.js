@@ -2,7 +2,7 @@ function FilmManager () {
 	this.getAll = function () {
 		return JSON.parse(window.localStorage.getItem('films')) || [];
 	};
-	this.add = function (film) {
+	this.save = function (film) {
 		var films = this.getAll();
 		films.push(film);
 		window.localStorage.setItem('films', JSON.stringify(films));	

@@ -6,11 +6,60 @@
 </head>
 <body>
 
+	
+
 	<script src="firstApi.js"></script>
 	<script>
 		var worker = new Worker("task.js");
 
-		worker.onmessage = function ()
+		window.addEventListener('load', function () {
+			// At first, let's check if we have permission for notification
+			// If not, let's ask for it
+			if (Notification && Notification.permission !== "granted") {
+				Notification.requestPermission(function (status) {
+				  if (Notification.permission !== status) {
+				    Notification.permission = status;
+				  }
+				});
+			}
+		});
+		
+		
+		worker.onmessage = function (oEvent) {
+			var filmManager = new FilmManager();
+			if (oEvent.data.action === "save") {
+				filmManager.save(oEvent.data.film);
+				/*
+				Notification.requestPermission(function (status) {
+					if (Notification.permission !== status) {
+						Notification.permission = status;
+					}
+					//var n = new Notification("title", {body: "notification body"});
+				});*/
+			   // If the user agreed to get notified
+			    if (Notification && Notification.permission === "granted") {
+			    	var n = new Notification("Hi!");
+			    } else if (Notification && Notification.permission !== "denied") {
+		      		Notification.requestPermission(function (status) {
+				        if (Notification.permission !== status) {
+				        	Notification.permission = status;
+				        }
+				        if (status === "granted") {
+				         	var n = new Notification("Hi!");
+				        }
+					});
+				}
+			}
+		}
+
+		function save(film) {
+			worker.postMessage(
+				{
+					"action": 'save', 
+					"film": film
+				}
+			);
+		}
 
 	</script>
 </body>
